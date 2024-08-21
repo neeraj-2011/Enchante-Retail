@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Enchante - Where Elegance Comes Alive</title>
+    <link rel="shortcut icon" href="image/logo.png">
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css" integrity="sha512-KfkfwYDsLkIlwQp6LFnl8zNdLGxu9YAA1QvwINks4PhcElQSvqcyVLLD9aMhXd13uQjoXtEKNosOWaZqXgel0g==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+</head>
+<body>
+    <h1>Welcome to Enchante <span id="username"></span></h1>
+    <section>
+        <nav>
+            <div class="logo">
+                <h1>ENCHANT<span>E</span></h1>
+            </div>
+            <ul>
+                <li><a href="#Home">Home</a></li>
+                <li><a href="#Products">Products</a></li>
+                <li><a href="#About">About</a></li>
+                <li><a href="#Services">Services</a></li>
+                <li><a href="#Logout">Logout</a></li>
+            </ul>
+            <div class="icons">
+                <i class="fa-solid fa-heart"></i>
+                <a href="cart.html" class="cart-link">
+                    <i class="fa-solid fa-cart-shopping"></i>
+                </a>
+                <i class="fa-solid fa-user"></i>
+            </div>
+        </nav>
+        <section class="main-content">
+            <h1>Welcome to Enchante <span id="username"></span></h1>
+            <div class="products">
+                <h1>PRODUCTS</h1>
+                <iframe src="products.html" width="100%" height="600" frameborder="0"></iframe>
+            </div>
+        </section>
+        <i class="fa-solid fa-microphone" id="voiceAssistantTrigger"></i>
+        <div id="output"></div>
+        <script src="voice-a.js" defer></script>
+    </section>
+    <div class="logout-button-container">
+        <button id="logout-button">Logout</button>
+    </div>
+    <div id="cart-chatbot-button" class="chatbot-button">Chat With Us</div>
+    <div id="cart-chatbot" class="chatbot" style="display: none;">
+      <div id="cart-chatbot-header" class="chatbot-header">Customer Chatbot</div>
+      <div id="cart-chatbot-messages" class="chatbot-messages"></div>
+      <div class="chatbot-input-container">
+          <input type="text" id="cart-chatbot-input" class="chatbot-input" placeholder="Type a message...">
+          <button id="start-voice-btn">🎤</button>
+          <button id="toggle-speech-btn">🔊</button>
+      </div>
+  </div>  
+    <script src="cart-chatbot.js" defer></script>
+    <script>
+        // Get the username from the URL query parameter
+        const urlParams = new URLSearchParams(window.location.search);
+        const username = urlParams.get('username');
+        document.getElementById('username').textContent = username;
+
+        // Logout function
+        function logout() {
+            // Clear user session data
+            localStorage.removeItem('token');
+            localStorage.removeItem('isLogin');
+            // Redirect to login page
+            window.location.href = 'index.html';
+        }
+
+        // Add event listeners to the logout button and link
+        document.getElementById('logout-button').addEventListener('click', logout);
+        document.querySelector('a[href="#Logout"]').addEventListener('click', logout);
+    </script>
+</body>
+</html>

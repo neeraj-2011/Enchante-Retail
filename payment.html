@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payment Confirmation - Enchante</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            color: #333;
+            background: linear-gradient(to right, #c72092, #6c14d0);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        .container {
+            display: flex;
+            width: 90%;
+            max-width: 1200px;
+            padding: 20px;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        .side {
+            flex: 1;
+            padding: 20px;
+        }
+        .left-side {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            border-right: 2px solid #ccc;
+        }
+        .right-side {
+            display: none; /* Hidden by default */
+            flex: 1;
+            padding: 20px;
+            text-align: center;
+            flex-direction: column;
+        }
+        .qr-code img {
+            width: 200px;
+            height: 200px;
+            object-fit: cover;
+            margin-top: 10px;
+        }
+        .btn {
+            display: inline-block;
+            background-color: #ff6f61;
+            color: #fff;
+            padding: 10px 20px;
+            border-radius: 4px;
+            text-decoration: none;
+            font-size: 16px;
+            margin-top: 20px;
+            border: none;
+            cursor: pointer;
+        }
+        .btn:hover {
+            background-color: #e55b52;
+        }
+        .instructions {
+            font-size: 18px;
+            margin-bottom: 10px;
+            color: #333;
+        }
+        .success-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .success-message {
+            font-size: 24px;
+            color: #4caf50;
+            margin-top: 15px;
+            font-weight: bold;
+        }
+        .transaction-id {
+            background-color: #dff0d8;
+            color: #3c763d;
+            border: 1px solid #d6e9c6;
+            padding: 10px;
+            border-radius: 4px;
+            margin-bottom: 15px;
+            font-size: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+        .transaction-id i {
+            font-size: 30px;
+            margin-right: 10px;
+        }
+        .thank-you {
+            font-size: 18px;
+            margin-top: 10px;
+            font-weight: bold;
+        }
+        .keep-shopping {
+            font-size: 16px;
+            margin-top: 10px;
+            margin-bottom: 15px;
+        }
+        .continue-shopping {
+            background-color: #ff6f61;
+            color: #fff;
+            padding: 10px 20px;
+            border-radius: 4px;
+            text-decoration: none;
+            font-size: 16px;
+            display: inline-block;
+            font-weight: bold;
+            transition: background-color 0.3s;
+        }
+        .continue-shopping:hover {
+            background-color: #e55b52;
+        }
+    </style>
+    <!-- Font Awesome for check icon -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+    <div class="container">
+        <!-- Left Side: QR Code and Payment Completed Button -->
+        <div class="side left-side">
+            <h1>Complete Your Payment</h1>
+            <div class="qr-code">
+                <p>Scan the QR code to complete your payment:</p>
+                <!-- Replace with your actual QR code image URL -->
+                <img src="https://live.staticflickr.com/7218/13958491944_1057c4f453_n.jpg" alt="QR Code">
+            </div>
+            <p class="instructions">After completing the payment through the QR code, click the button below to confirm.</p>
+            <button class="btn" id="payment-completed-btn">Verify Payment Completion</button>
+        </div>
+
+        <!-- Right Side: Payment Success Information -->
+        <div class="side right-side" id="success-info">
+            <div class="success-container">
+                <!-- Large Tick Mark Icon -->
+                <i class="fa fa-check-circle" style="font-size: 80px; color: #4caf50;"></i>
+                <h1 class="success-message">Payment Successful</h1>
+                <div class="transaction-id">
+                    <i class="fa fa-check-circle"></i> <!-- Font Awesome check icon -->
+                    <span>Transaction ID: TX1234567890</span>
+                </div>
+                <p class="thank-you">Thank you for shopping with Enchante!</p>
+                <p class="keep-shopping">Keep shopping for exciting offers on Enchante...</p>
+                <a href="index.html" class="continue-shopping">Continue Shopping</a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('payment-completed-btn').addEventListener('click', function() {
+            // Show the success information
+            document.getElementById('success-info').style.display = 'flex';
+        });
+    </script>
+</body>
+</html>

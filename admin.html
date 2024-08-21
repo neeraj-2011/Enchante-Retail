@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin - Enchante</title>
+    <link rel="shortcut icon" href="image/logo.png">
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css" integrity="sha512-KfkfwYDsLkIlwQp6LFnl8zNdLGxu9YAA1QvwINks4PhcElQSvqcyVLLD9aMhXd13uQjoXtEKNosOWaZqXgel0g==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+</head>
+<body>
+    <section>
+        <!-- Optional slider for discount -->
+        <div class="slider-container">
+            <input type="range" id="slider" min="0" max="100" value="0">
+            <div id="slider-tooltip" class="slider-tooltip">0</div>
+        </div>
+        <script>
+            document.addEventListener('DOMContentLoaded', () => {
+    const slider = document.getElementById('slider');
+    const tooltip = document.getElementById('slider-tooltip');
+
+    function updateTooltip() {
+        const value = slider.value;
+        tooltip.textContent = value;
+
+        // Calculate the percentage of the slider's value
+        const percent = (value - slider.min) / (slider.max - slider.min);
+
+        // Calculate the tooltip position based on slider width
+        const sliderRect = slider.getBoundingClientRect();
+        const tooltipWidth = tooltip.offsetWidth;
+        const sliderWidth = slider.offsetWidth;
+        const tooltipLeft = percent * (sliderWidth - tooltipWidth);
+
+        // Position the tooltip inside the slider container
+        tooltip.style.left = `${tooltipLeft}px`;
+    }
+
+    // Update tooltip on slider input
+    slider.addEventListener('input', updateTooltip);
+
+    // Initial positioning
+    updateTooltip();
+});
+        </script>
+        <button id="saveButton">Apply Discount</button>
+        <button id="back-to-original">Reset Prices</button>
+        <button id="admin-logout-button" class="logout-button">Logout</button>
+
+        <!-- Products -->
+        <div class="products" id="Products">
+            <h1>PRODUCTS</h1>
+            <div class="box">
+                <!-- Product cards will be dynamically rendered here -->
+            </div>
+        </div>
+        
+        <i class="fa-solid fa-microphone" id="voiceAssistantTrigger"></i>
+        <div id="output"></div>
+        <script src="voice-a.js" defer></script>
+
+        <!-- Add Chatbot here if needed -->
+        <button id="admin-chatbot-buttonn" class="chatbot-button">Admin Chat Bot</button>
+        <div id="admin-chatbot" class="chatbot hidden">
+            <div id="admin-chatbot-header" class="chatbot-header">Admin Chatbot</div>
+            <div id="admin-chatbot-messages" class="chatbot-messages"></div>
+            <div class="chatbot-input-container">
+                <input type="text" id="admin-chatbot-input" class="chatbot-input" placeholder="Type a message...">
+                <div class="chatbot-controls">
+                    <button id="admin-chatbot-voice-btn" class="chatbot-voice-btn">
+                        🎤
+                    </button>
+                    <button id="admin-chatbot-speaker-btn" class="chatbot-speaker-btn" aria-label="Toggle mute">🔊</button>
+                </div>
+            </div>
+        </div>
+
+
+        <script src="admin-chatbot.js"></script>
+        
+        <script>
+            // Default products array with IDs
+            const defaultProducts = [
+                { id: 0, name: 'Dress1', description: 'Red cocktail full length dress.', price: 100.99, rating: 5, imageSource: 'pics/shoes1.jpg', discount: 0 },
+                { id: 1, name: 'Dress2', description: 'Pink color cocktail dress with train.', price: 200.99, rating: 4.5, imageSource: 'pics/shoes2.jpg', discount: 0 },
+                { id: 2, name: 'Dress3', description: 'Gold color cocktail full length dress.', price: 175.99, rating: 3.5, imageSource: 'pics/shoes3.jfif', discount: 0 },
+                { id: 3, name: 'Dress4', description: 'Yellow color full length cocktail dress with long train.', price: 120.99, rating: 4, imageSource: 'pics/shoes4.jfif', discount: 0 },
+                { id: 4, name: 'Dress5', description: 'Pink color short cocktail dress.', price: 90.99, rating: 5, imageSource: 'pics/shoes5.jpg', discount: 0 },
+                { id: 5, name: 'Dress6', description: 'Purple floral princess dress frills.', price: 140.99, rating: 4.5, imageSource: 'pics/shoes6.jpg', discount: 0 },
+                { id: 6, name: 'Dress7', description: 'White full length cocktail dress with pearls.', price: 110.99, rating: 3, imageSource: 'pics/shoes7.jfif', discount: 0 },
+                { id: 7, name: 'Dress8', description: 'French style biscuit color frock, with silver belt.', price: 130.99, rating: 4.5, imageSource: 'pics/shoes8.jpg', discount: 0 }
+            ];
+
+            function initializeProducts() {
+                let products = JSON.parse(localStorage.getItem('products'));
+                if (!products || products.length === 0) {
+                    localStorage.setItem('products', JSON.stringify(defaultProducts));
+                    products = defaultProducts;
+                } else {
+                    // Ensure each product has an ID
+                    products.forEach((product, index) => {
+                        if (product.id === undefined) {
+                            product.id = index; // Assign ID based on index
+                        }
+                    });
+                    localStorage.setItem('products', JSON.stringify(products));
+                }
+                return products;
+            }
+
+            function applyDiscount(products, discount) {
+                products.forEach(product => {
+                    if (!product.originalPrice) {
+                        product.originalPrice = product.price;  // Save the original price if not already saved
+                    }
+                    product.discount = discount;
+                    // Recalculate price based on the discount
+                    product.price = product.originalPrice - (product.originalPrice * product.discount / 100);
+                });
+                localStorage.setItem('products', JSON.stringify(products));
+            }
+
+            function loadProducts() {
+                const productsToRender = initializeProducts();
+                console.log("Loaded products:", productsToRender);
+                renderProducts(productsToRender);
+            }
+
+            function renderProducts(products) {
+                const productsContainer = document.getElementById('Products');
+                const boxContainer = productsContainer.querySelector('.box');
+                boxContainer.innerHTML = '';
+
+                products.forEach(product => {
+                    if (!product.name || !product.price || product.id === undefined) {
+                        console.error("Product data is missing or invalid:", product);
+                        return;
+                    }
+
+                    console.log(`Rendering product ID: ${product.id}`);
+
+                    const card = document.createElement('div');
+                    card.classList.add('card');
+
+                    const smallCard = document.createElement('div');
+                    smallCard.classList.add('small_card');
+                    const heart = document.createElement('i');
+                    heart.classList.add('fa-solid', 'fa-heart');
+                    const share = document.createElement('i');
+                    share.classList.add('fa-solid', 'fa-share');
+                    smallCard.appendChild(heart);
+                    smallCard.appendChild(share);
+                    card.appendChild(smallCard);
+
+                    const image = document.createElement('div');
+                    image.classList.add('image');
+                    const img = document.createElement('img');
+                    img.src = product.imageSource;
+                    image.appendChild(img);
+                    card.appendChild(image);
+
+                    const productsText = document.createElement('div');
+                    productsText.classList.add('products_text');
+                    const name = document.createElement('h2');
+                    name.textContent = product.name;
+                    productsText.appendChild(name);
+
+                    const description = document.createElement('p');
+                    description.textContent = product.description;
+                    productsText.appendChild(description);
+
+                    const price = document.createElement('p');
+                    price.classList.add('price');
+                    const discountedPrice = product.originalPrice - (product.originalPrice * product.discount / 100);
+                    price.innerHTML = `<strike>${product.originalPrice.toFixed(2)}</strike> ${discountedPrice.toFixed(2)}`;
+                    productsText.appendChild(price);
+
+                    const productsStar = document.createElement('div');
+                    productsStar.classList.add('products_star');
+                    for (let i = 0; i < 5; i++) {
+                        const star = document.createElement('i');
+                        star.classList.add('fa-solid', i < Math.floor(product.rating) ? 'fa-star' : 'fa-star-half-stroke');
+                        if (i >= Math.ceil(product.rating)) {
+                            star.classList.remove('fa-solid');
+                            star.classList.add('fa-regular');
+                        }
+                        productsStar.appendChild(star);
+                    }
+                    productsText.appendChild(productsStar);
+
+                    const btn = document.createElement('button');
+                    btn.classList.add('btn');
+                    btn.textContent = 'Edit';
+                    btn.addEventListener('click', () => editProduct(product));
+                    productsText.appendChild(btn);
+
+                    const productId = document.createElement('p');
+                    productId.textContent = `Product ID: ${product.id}`;
+                    productId.style.color = 'grey';      // Set the text color to black
+                    productsText.appendChild(productId);
+
+                    card.appendChild(productsText);
+                    boxContainer.appendChild(card);
+                });
+            }
+
+            function editProduct(product) {
+                console.log("Editing product:", product);
+                // Handle product editing
+            }
+
+            document.getElementById('saveButton').addEventListener('click', () => {
+                const discount = parseFloat(document.getElementById('slider').value);
+                const products = JSON.parse(localStorage.getItem('products')) || [];
+                applyDiscount(products, discount);
+                loadProducts();
+            });
+
+            document.getElementById('back-to-original').addEventListener('click', () => {
+                const products = JSON.parse(localStorage.getItem('products')) || [];
+                products.forEach(product => {
+                    if (!product.originalPrice) {
+                        product.originalPrice = product.price;  // Save the original price if not already saved
+                    }
+                    product.price = product.originalPrice;  // Reset to original price
+                    product.discount = 0;  // Reset discount
+                });
+                localStorage.setItem('products', JSON.stringify(products));
+                loadProducts();
+            });
+
+            document.getElementById('admin-logout-button').addEventListener('click', () => {
+                // Implement your logout logic here
+                console.log("Admin logout.");
+                // Redirect to login page or clear session as needed
+                window.location.href = 'index.html';  // Example redirect
+            });
+
+            document.getElementById('admin-chatbot-buttonn').addEventListener('click', () => {
+                const chatbot = document.getElementById('admin-chatbot');
+                chatbot.style.display = chatbot.style.display === 'none' ? 'block' : 'none';
+            });
+
+            // Load and display products
+            loadProducts();
+        </script>
+    </section>
+</body>
+</html>
